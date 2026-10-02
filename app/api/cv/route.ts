@@ -10,6 +10,7 @@ export const dynamic = 'force-static';
 export async function GET() {
   const file = await readFile(path.join(process.cwd(), 'public', profile.cv));
   return new Response(new Uint8Array(file), {
-    headers: { 'Content-Type': 'application/octet-stream', 'Cache-Control': 'public, max-age=300' },
+    // Always revalidate: with a 5-minute max-age a freshly replaced CV kept showing the old copy in browsers.
+    headers: { 'Content-Type': 'application/octet-stream', 'Cache-Control': 'public, max-age=0, must-revalidate' },
   });
 }
