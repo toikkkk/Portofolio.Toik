@@ -51,7 +51,12 @@ export default function LiquidGlassCursor({
   const [dims, setDims] = useState({ width: 0, height: 0 });
   const [copyStyle, setCopyStyle] = useState<CSSProperties>({});
   const [mapUrl, setMapUrl] = useState('');
-  const reduceMotion = useReducedMotion();
+  // The server cannot know the visitor's motion preference, so the first client render must match the server's (lens on);
+  // only after mounting do we switch to the plain, lens-free version for people who asked for reduced motion.
+  const prefersReduced = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const reduceMotion = mounted && !!prefersReduced;
 
   // The displacement bitmap is drawn once at the largest size any shape can reach, then stretched
   // to the live lens size (preserveAspectRatio="none"); redrawing pixels every frame would jank.

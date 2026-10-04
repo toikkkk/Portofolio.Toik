@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{var d=document.documentElement;var s=sessionStorage.getItem('intro-seen');var r=matchMedia('(prefers-reduced-motion: reduce)').matches;d.dataset.intro=(location.pathname==='/'&&!s&&!r)?'pending':'done'}catch(e){document.documentElement.dataset.intro='done'}",
+              "try{var d=document.documentElement;var s=sessionStorage.getItem('intro-seen');var r=matchMedia('(prefers-reduced-motion: reduce)').matches;d.dataset.intro=(location.pathname==='/'&&!s&&!r)?'pending':'done';d.dataset.motion=r?'off':'on'}catch(e){document.documentElement.dataset.intro='done';document.documentElement.dataset.motion='off'}",
           }}
         />
       </head>

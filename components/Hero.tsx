@@ -1,27 +1,33 @@
 'use client';
+import { useRef } from 'react';
 import Image from 'next/image';
 import { TransitionLink } from '@/components/TransitionLink';
 import LiquidGlassCursor from '@/components/ui/liquid-glass-cursor';
 import RotatingWord from '@/components/RotatingWord';
 import { ArrowIcon } from '@/components/Icons';
+import { useHeroMotion } from '@/components/useHeroMotion';
 import { profile, rotatingWords } from '@/data/content';
 
 // `lens` is true for the magnified copy shown inside the glass cursor. The colour portrait has
 // exactly the same canvas size and subject bounds as the black-and-white one, so swapping it in
 // lines up pixel for pixel and the colour appears only where the lens covers the person.
 function HeroContent({ lens }: { lens: boolean }) {
+  const scope = useRef<HTMLDivElement>(null);
+  useHeroMotion(scope, !lens); // GSAP opening animation: original content only, never the lens copy
+  // data-hero marks the elements the animation drives (see useHeroMotion)
+  const hero = (name: string) => (lens ? {} : { 'data-hero': name });
   return (
-    <>
-      <p className="hero-intro">
+    <div className="hero-content" ref={scope}>
+      <p className="hero-intro" {...hero('intro')}>
         Hi, my name is <b>{profile.name}</b> and I am an aspiring
       </p>
 
       <h1 className="hero-title">
-        <span className="solid">Data Scientist</span>
-        <span className="outline">Data Analyst</span>
+        <span className="solid" {...hero('solid')}>Data Scientist</span>
+        <span className="outline" {...hero('outline')}>Data Analyst</span>
       </h1>
 
-      <div className="hero-photo-wrap">
+      <div className="hero-photo-wrap" {...hero('photo')}>
         <Image
           className="hero-photo"
           src={lens ? '/toik-portrait-color.png' : '/toik-portrait-bw.png'}
@@ -33,18 +39,18 @@ function HeroContent({ lens }: { lens: boolean }) {
         />
       </div>
 
-      <p className="hero-sub">
+      <p className="hero-sub" {...hero('sub')}>
         I build <RotatingWord words={rotatingWords} />
         <br />
         based in {profile.city}, Indonesia.
       </p>
-      <ul className="hero-marks" aria-label="Stack">
+      <ul className="hero-marks" aria-label="Stack" {...hero('marks')}>
         <li>PyTorch</li>
         <li>FastAPI</li>
         <li>Docker</li>
       </ul>
 
-      <div className="hero-ctas">
+      <div className="hero-ctas" {...hero('ctas')}>
         <TransitionLink href="/projects" label="Projects" className="btn btn-primary">
           Need a data scientist? <ArrowIcon />
         </TransitionLink>
@@ -52,7 +58,7 @@ function HeroContent({ lens }: { lens: boolean }) {
           Need a data analyst? View CV
         </TransitionLink>
       </div>
-    </>
+    </div>
   );
 }
 

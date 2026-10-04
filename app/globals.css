@@ -168,10 +168,11 @@ button { font: inherit; color: inherit; }
   pointer-events: none;
   user-select: none;
 }
-.hero-title span { display: block; white-space: nowrap; }
+/* direct children only: SplitText inserts its own spans inside these lines, and they must stay inline */
+.hero-title > span { display: block; white-space: nowrap; }
 /* "Data Scientist" has 14 letters and "Data Analyst" 12, so scale the shorter (outline) line up to match widths */
-.hero-title .solid { color: var(--accent); }
-.hero-title .outline { color: transparent; -webkit-text-stroke: 1.5px var(--fg); font-size: 1.075em; margin-top: 0.06em; }
+.hero-title .solid { color: var(--accent); transform: translate3d(calc(var(--hx, 0) * -12px), calc(var(--hy, 0) * -6px + var(--hs, 0) * 46px), 0); will-change: transform; }
+.hero-title .outline { color: transparent; -webkit-text-stroke: 1.5px var(--fg); font-size: 1.075em; margin-top: 0.06em; transform: translate3d(calc(var(--hx, 0) * 12px), calc(var(--hy, 0) * 6px + var(--hs, 0) * 26px), 0); will-change: transform; }
 /* the wrapper crops the photo at the hero's bottom edge and fades only the last stretch, so the body stays solid behind the buttons */
 .hero-photo-wrap {
   position: absolute; inset: 0; z-index: 1; overflow: hidden;
@@ -185,7 +186,9 @@ button { font: inherit; color: inherit; }
   /* head top lines up with the top of the outline line */
   top: calc(56px + var(--title-size) * 0.925 - var(--photo-w) * var(--photo-head));
   width: var(--photo-w); height: auto;
-  transform: translateX(-50%);
+  /* parallax: --hx/--hy (pointer, -1..1) and --hs (scroll through the hero, 0..1) are set on .hero by useHeroMotion; the lens copy inherits them, so it moves in lockstep */
+  transform: translate3d(calc(-50% + var(--hx, 0) * 22px), calc(var(--hy, 0) * 10px + var(--hs, 0) * -34px), 0);
+  will-change: transform;
   user-select: none;
 }
 /* sub line and stack labels share the button row's baseline (buttons are 46px tall, 22px from the bottom) */
@@ -457,18 +460,15 @@ html:not([data-intro='pending']) .intro { display: none; }
 @keyframes greet { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 /* ---------- landing entrance (starts when the intro hands over: <html data-intro="done">) ---------- */
-@keyframes rise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 .topbar { animation: fade 0.8s ease-out 0.1s both; }
-.hero-intro { animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s both; }
-.hero-title .solid { animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s both; }
-.hero-title .outline { animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s both; }
-.hero-photo-wrap { animation: fade 1.1s ease-out 0.5s both; }
-.hero-sub, .hero-marks, .hero-ctas { animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.7s both; }
+/* the hero's own entrance is driven by GSAP (components/useHeroMotion.ts) */
+.hero-content { display: contents; }
+/* until that effect has built its timeline, keep the animated parts hidden so they never flash; the 2.5s keyframe is a safety net if scripts are slow or fail */
+html[data-motion='on'] .hero-content:not([data-ready]) [data-hero] { visibility: hidden; animation: hero-failsafe 0s linear 2.5s forwards; }
+@keyframes hero-failsafe { to { visibility: visible; } }
 /* hold everything at its first frame until the greeting has finished */
-html[data-intro='pending'] .topbar,
-html[data-intro='pending'] .hero,
-html[data-intro='pending'] .hero * { animation-play-state: paused; }
+html[data-intro='pending'] .topbar { animation-play-state: paused; }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
