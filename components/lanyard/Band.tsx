@@ -16,6 +16,8 @@ type Props = {
   front: THREE.Texture;
   back: THREE.Texture;
   strap: THREE.Texture;
+  /** true shows the back of the card; the card turns around its vertical axis. */
+  flipped?: boolean;
 };
 
 // Card geometry in world units
@@ -33,12 +35,13 @@ const SEGMENTS = 32; // where the strap passes through the clip
  * Dragging the card switches it to a kinematic body that follows the pointer; releasing hands it back
  * to the simulation. The strap is a smoothed curve through the points.
  */
-export default function Band({ front, back, strap }: Props) {
+export default function Band({ front, back, strap, flipped = false }: Props) {
   const anchor = useRef<RapierRigidBody>(null);
   const p1 = useRef<RapierRigidBody>(null);
   const p2 = useRef<RapierRigidBody>(null);
   const p3 = useRef<RapierRigidBody>(null);
   const card = useRef<RapierRigidBody>(null);
+  const face = useRef<THREE.Group>(null); // the printed card and its clip; turned by the front/back toggle
   const ribbon = useMemo(() => {
     const n = SEGMENTS + 1;
     const g = new THREE.BufferGeometry();
@@ -93,6 +96,8 @@ export default function Band({ front, back, strap }: Props) {
   }, [hover, grab, gl]);
 
   useFrame((state, delta) => {
+    // ease the card toward the requested side (independent of the physics body, which keeps swinging)
+    if (face.current) face.current.rotation.y = THREE.MathUtils.damp(face.current.rotation.y, flipped ? Math.PI : 0, 5, delta);
     const c = card.current;
     if (!c || !anchor.current || !p1.current || !p2.current || !p3.current) return;
 
@@ -176,6 +181,7 @@ export default function Band({ front, back, strap }: Props) {
         <RigidBody ref={card} position={[2, 0, 0]} {...body} type={grab ? 'kinematicPosition' : 'dynamic'}>
           <CuboidCollider args={[CARD_W / 2, CARD_H / 2, 0.025]} />
           <group
+            ref={face}
             onPointerOver={() => setHover(true)}
             onPointerOut={() => setHover(false)}
             onPointerUp={(e) => {

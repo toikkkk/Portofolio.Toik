@@ -21,7 +21,7 @@ function FitCamera() {
   return null;
 }
 
-export default function Scene({ active }: { active: boolean }) {
+export default function Scene({ active, flipped }: { active: boolean; flipped: boolean }) {
   const [tex, setTex] = useState<Tex | null>(null);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function Scene({ active }: { active: boolean }) {
       </Environment>
       {tex && (
         <Physics interpolate gravity={[0, -40, 0]} timeStep={1 / 60}>
-          <Band front={tex.front} back={tex.back} strap={tex.strap} />
+          <Band front={tex.front} back={tex.back} strap={tex.strap} flipped={flipped} />
         </Physics>
       )}
     </Canvas>

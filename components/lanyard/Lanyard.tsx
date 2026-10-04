@@ -34,6 +34,7 @@ export default function Lanyard() {
   const box = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
   const [gl, setGl] = useState<boolean | null>(null);
+  const [flipped, setFlipped] = useState(false);
 
   useEffect(() => {
     setGl(hasWebGL());
@@ -46,7 +47,13 @@ export default function Lanyard() {
 
   return (
     <div className="lanyard-panel" ref={box}>
-      {gl === false || gl === null ? <Fallback /> : <div className="lanyard-canvas"><Scene active={visible} /></div>}
+      {gl === false || gl === null ? <Fallback /> : <div className="lanyard-canvas"><Scene active={visible} flipped={flipped} /></div>}
+      {gl && (
+        <div className="lanyard-flip" role="group" aria-label={about.flipLabel}>
+          <button type="button" aria-pressed={!flipped} onClick={() => setFlipped(false)}>{about.flipFront}</button>
+          <button type="button" aria-pressed={flipped} onClick={() => setFlipped(true)}>{about.flipBack}</button>
+        </div>
+      )}
       <span className="lanyard-hint">{about.hintLabel}</span>
     </div>
   );

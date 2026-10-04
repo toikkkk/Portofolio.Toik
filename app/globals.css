@@ -239,6 +239,12 @@ button { font: inherit; color: inherit; }
 .cv-pages canvas + canvas { border-top: 1px solid var(--line); }
 .cv-fallback { padding: 24px; color: var(--muted); }
 .cv-fallback a { color: var(--fg); font-weight: 600; }
+/* front / back switch for the 3D card */
+.lanyard-flip { position: absolute; top: 14px; right: 14px; z-index: 3; display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--bg); }
+.lanyard-flip button { min-height: 32px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s, color 0.15s; }
+.lanyard-flip button:hover { color: var(--fg); }
+.lanyard-flip button[aria-pressed='true'] { background: var(--fg); color: var(--bg); }
+@media (max-width: 760px) { .lanyard-flip button { min-height: 40px; padding: 0 18px; } }
 .lanyard-fallback { position: absolute; inset: 0; display: grid; place-items: center; }
 .fallback-card {
   width: min(62%, 260px); aspect-ratio: 1.6 / 2.25;

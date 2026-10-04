@@ -32,6 +32,9 @@ export const about = {
   viewCvLabel: 'View CV',
   downloadCvLabel: 'Download CV',
   hintLabel: 'Drag the card',
+  flipLabel: 'Card side',
+  flipFront: 'Front',
+  flipBack: 'Back',
   githubLabel: 'GitHub profile',
   linkedinLabel: 'LinkedIn profile',
 };
