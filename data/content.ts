@@ -362,7 +362,7 @@ export const education = [
     when: '2024 – 2028 (expected)',
     school: 'Politeknik Elektronika Negeri Surabaya (PENS)',
     degree: 'Diploma 4, Applied Data Science',
-    text: 'GPA 3.6 / 4.00. Machine Learning, Big Data, MLOps, Data Warehouse, Web Services, Recommender Systems.',
+    text: 'GPA 3.46 / 4.00. Machine Learning, Big Data, MLOps, Data Warehouse, Web Services, Recommender Systems.',
   },
   {
     when: 'SMAN 1 Giri',
